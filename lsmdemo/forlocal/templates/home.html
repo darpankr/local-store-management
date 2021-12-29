@@ -1,0 +1,41 @@
+
+{% extends 'base.html' %}
+{% block content %}
+
+		<br>
+
+		<div class="row">
+			<div class="col-md">
+				<div class="card card-body">
+					<h5>PHONE</h5>
+				</div>
+				<div class="card card-body">
+					<table class="table table-sm">
+				<tr>
+					<th>Brand</th>
+					<th>Model</th>
+					<th>Color</th>
+					<th>Ram</th>
+					<th>Rom</th>
+					<th>Shop</th>
+					<th>Status</th>
+				</tr>
+				{% for phone in phone %}
+
+				<tr>
+					<td>{{phone.brand}}</td>
+					<td>{{phone.model}}</td>
+					<td>{{phone.color}}</td>
+					<td>{{phone.ram}}</td>
+					<td>{{phone.rom}}</td>
+					<td>{{phone.shop.owner_name.User.id}}
+					<td class = "text-success">{{phone.status}}</td>
+				</tr>
+				{% endfor %}
+			</table>
+				</div>
+			</div>
+			
+		</div>
+
+{% endblock content %}

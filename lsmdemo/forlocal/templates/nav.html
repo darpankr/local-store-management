@@ -1,0 +1,35 @@
+
+<style>
+  .hello-msg{
+    font-size: 18px;
+    color: #fff;
+    margin-right: 20px;
+  }
+</style>
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="">NintyZero</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      	<ul class = "navbar-nav">
+      		{% if request.user.is_authenticated %}
+      		<li class = "nav-item active">
+      			<a class = "nav-link" href = "{% url 'Shophome' %}">Home</a>
+      		</li>
+      		<li class = "nav-item active">
+      			<a class = "nav-link" href = "{% url 'Dashboard' %}">Dashboard</a>
+      		</li>
+      		{% endif %}
+      </div>
+      {% if request.user.is_authenticated %}
+      <span class="hello-msg">Hi {{request.user}}</span>
+      <br>
+      <span><a href = "{% url 'Logout' %}">Logout</a></span>
+      {% else %}
+      <span><a href = "{% url 'Login' %}">Login</a></span>
+      {% endif %}
+    </nav>
