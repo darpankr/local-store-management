@@ -6,9 +6,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
+from django.contrib.auth.models import Group
+
 from .models import *
-from .forms import *
-# from .filters import OrderFilter
+from .forms import PhoneForm, CreateUserForm, OwnerForm, ShopForm
+from .filters import PhoneFilter
 from .decorators import unauthenticated_user, allowed_users, admin_only
 
 # Create your views here.
@@ -29,12 +31,12 @@ def signup(request):
 		if form.is_valid():
 			user = form.save()
 
-			# username = orm.cleaned_data.get('username')
-			# group = Group.objects.get(name = 'customer')
-			# user.groups.add(group)
-			# Customer.objects.create(
-			# 	user=user,
-			# 	)
+			username = form.cleaned_data.get('username')
+			group = Group.objects.get(name = 'owner')
+			user.groups.add(group)
+			Owner.objects.create(
+				user=user,
+				)
 
 			# messages.success(request, 'Account was created for ' + username)
 			return redirect('Login')
@@ -50,7 +52,7 @@ def signin(request):
 
     	user = authenticate(request, username = username, password = password)
     	if user is not None:
-    		login(request, user)
+    		login(request, user) 
     		return redirect('Shophome')
     	else:
     		messages.info(request, 'Username or Password is incorrect ')
@@ -84,18 +86,31 @@ def shopHome(request):
 @login_required(login_url = 'Login')
 @allowed_users(allowed_roles = ['owner'])
 def dashboard(request):
-	owner = request.user.owner
-	products = Smartphone.objects.filter(owner_id = owner)
+	owner  = request.user.owner
+	products = owner.smartphone_set.all()
+
+	total_order = products.count()
+	# total = orders.filter(status = 'delivered').count()
+	available = products.filter(status = 'available').count()
+	# ow = Owner.objects.all()
+	# id_prdct = Smartphone.objects.all()
+
+	# products = id_prdct.filter(owner = ow)
 	# print(owner)
 	# owner = Owner.request.user
 	# products = Smartphone.objects.filter()
-	context = {'products': products}
+
+	myFilter = PhoneFilter(request.GET, queryset = products)
+	products = myFilter.qs
+
+	context = {'products': products, 'owner': owner, 'total_order': total_order, 'available': available, 'myfilter': myFilter}
 	return render(request, 'dashboard.html', context)
 
 # @login_required(login_url = 'Login')
+# @allowed_users(allowed_roles = ['owner'])
 # def createPhone(request):
-# 	OrderFormSet = inlineformset_factory(Shop, Smartphone, fields=('__all__'), extra=5)
-# 	# owner = Owner.objects.get(id = pk)
+# 	OrderFormSet = inlineformset_factory(Owner, Smartphone, fields=('__all__'))
+# 	owner = Owner.objects.get(id = request.user.id)
 # 	formset = OrderFormSet(queryset=Smartphone.objects.none())
 # 	#form = OrderForm(initial={'customer':customer})
 # 	if request.method == 'POST':
@@ -109,22 +124,6 @@ def dashboard(request):
 # 	context = {'formset':formset}
 # 	return render(request, 'phone_form.html', context)
 
-@login_required(login_url = 'Login')
-@allowed_users(allowed_roles = ['owner'])
-def createPhone(request):
-	owner = request.user.id
-	owner_id = Smartphone.objects.get(id = owner)
-	form = PhoneForm()
-
-	if request.method == 'POST':
-		form = PhoneForm(request.POST, instance = owner_id)
-		if form.is_valid():
-			print("add")
-			form.save()
-			return redirect('Dashboard')
-
-	context = {'form': form}
-	return render(request, 'phone_form.html', context)
 
 
 @login_required(login_url = 'Login')
@@ -160,17 +159,87 @@ def shopProfile(request):
 	return render(request, 'shop_profile.html', context)
 
 
+# @login_required(login_url = 'Login')
+# @allowed_users(allowed_roles = ['owner'])
+# def shopProfileSetting(request):
+# 	owner = request.user.owner
+# 	form = ShopForm(instance = owner.shop)
+
+# 	if request.method == 'POST':
+# 		form = ShopForm(request.POST, request.FILES)
+# 		if form.is_valid():
+# 			# form = form.save(commit = False)
+# 			# form.owner_name = Owner.objects.get(user = request.user)
+# 			form.save()
+# 			return redirect('Shopprofile')
+
+# 	context = {'form': form}
+# 	return render(request, 'shop_form.html', context)
+
 @login_required(login_url = 'Login')
 @allowed_users(allowed_roles = ['owner'])
 def shopProfileSetting(request):
-	owner = request.user.owner.shop
-	form = ShopForm(instance = owner)
-
+	owner = request.user.owner
+	form = ShopForm(instance = shop)
 	if request.method == 'POST':
-		form = ShopForm(request.POST, request.FILES, instance = owner)
+		form = ShopForm(request.POST, request.FILES)
 		if form.is_valid():
+			form = form.save(commit = False)
+			form.owner_name = Owner.objects.get(user = request.user)
 			form.save()
 			return redirect('Shopprofile')
 
 	context = {'form': form}
 	return render(request, 'shop_form.html', context)
+
+
+@login_required(login_url = 'Login')
+@allowed_users(allowed_roles = ['owner'])
+def createPhone(request, pk):
+	owne = Owner.objects.get(id = pk)
+	form = PhoneForm()
+
+	if request.method == 'POST':
+
+		form = PhoneForm(request.POST)
+		# form.instance.owner = request.user
+		if form.is_valid():
+			print("add")
+			form = form.save(commit = False)
+			form.owner = Owner.objects.get(user = request.user)
+			form.save()
+			return redirect('Dashboard')
+
+	context = {'form': form}
+	return render(request, 'phone_form.html', context)
+
+
+
+@login_required(login_url = 'Login')
+@allowed_users(allowed_roles = ['owner'])
+def updatePhone(request, pk):
+
+	phone = Smartphone.objects.get(id = pk)
+	form = PhoneForm(instance = phone)
+
+	if request.method == 'POST':
+		form = PhoneForm(request.POST, instance = phone)
+		if form.is_valid():
+			form.save()
+			return redirect('Dashboard')
+
+	context = {'form': form}
+
+	return render(request, 'phone_form.html', context)
+
+@login_required(login_url = 'Login')
+@allowed_users(allowed_roles = ['owner'])
+def deletePhone(request, pk):
+
+	phone = Smartphone.objects.get(id = pk)
+	if request.method == 'POST':
+		phone.delete()
+		return redirect('Dashboard')
+
+	context = {'item': phone}
+	return render(request, 'delete.html', context)

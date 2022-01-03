@@ -10,11 +10,11 @@
 			<h5>Customer:</h5>
 			<hr>
 			<a class="btn btn-outline-info  btn-sm btn-block" href="">Update Customer</a>
-			<a class="btn btn-outline-danger  btn-sm btn-block" href="{% url 'Addphone' %}">Place Order</a>
+			<a class="btn btn-outline-danger  btn-sm btn-block" href="{% url 'Addphone' owner.id %}">Place Order</a>
 
 		</div>
 	</div>
-
+  
 	<div class="col-md">
 		<div class="card card-body">
 			<h5>Contact Information</h5>
@@ -28,7 +28,7 @@
 		<div class="card card-body">
 			<h5>Total Listed</h5>
 			<hr>
-			<h1 style="text-align: center;padding: 10px"></h1>
+			<h1 style="text-align: center;padding: 10px">{{total_order}}</h1>
 		</div>
 	</div>
 
@@ -36,7 +36,7 @@
 		<div class="card card-body">
 			<h5>Total Available</h5>
 			<hr>
-			<h1 style="text-align: center;padding: 10px"></h1>
+			<h1 style="text-align: center;padding: 10px">{{available}}</h1>
 		</div>
 	</div>
 </div>
@@ -47,6 +47,7 @@
 	<div class="col">
 		<div class="card card-body">
 			<form method="get">
+				{{myfilter.form}}
 		    <button class="btn btn-primary" type="submit">Search</button>
 		  </form>
 		</div>
@@ -78,8 +79,8 @@
 					<td>{{products.ram}}</td>
 					<td>{{products.rom}}</td>
 					<td>{{products.status}}</td>
-					<td><a href ="">Update</a></td>
-					<td><a href ="">Remove</a></td>
+					<td><a href ="{% url 'Updatephone' products.id %}">Update</a></td>
+					<td><a href ="{% url 'Deletephone' products.id %}">Remove</a></td>
 				</tr>
 				{% endfor %}
 			</table>

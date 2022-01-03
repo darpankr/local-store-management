@@ -102,4 +102,4 @@ class Smartphone(models.Model):
 	status = models.CharField(max_length = 100, null = True, choices = STATUS)
 
 	def __str__(self):
-		return self.model
+		return self.model or ''
