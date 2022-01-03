@@ -116,9 +116,16 @@ img {
 			                            <h5 class="mt-0 font-weight-bold mb-2">{{phone.brand}} {{phone.model}} ({{phone.color}} | {{phone.ram}} | {{phone.rom}})</h5>
 			                            <hr style="height:2px;border-width:0;color:black;background-color:black">
 			                            <p class="font-italic text-muted mb-0 small">Shop Name : {{phone.owner.shop}}</p>
+			                            {% if phone.status == 'available' %}
+			                            <h6 class="font-weight-bold my-2 text-success">Available</h6>
+			                            {% else %}
+			                            <h6 class="font-weight-bold my-2 text-danger">Out of stock</h6>
+			                            {% endif %}
+			                            
 			                            <div class="d-flex align-items-center justify-content-between mt-1">
 			                                <h6 class="font-weight-bold my-2">₹{{phone.price}}</h6>
 			                                <ul class="list-inline small">
+
 			                                    <li class="list-inline-item m-0">hi<i class="fa fa-star text-success"></i></li>
 			                                    <li class="list-inline-item m-0"><i class="fa fa-star text-success"></i></li>
 			                                    <li class="list-inline-item m-0"><i class="fa fa-star text-success"></i></li>
@@ -126,8 +133,14 @@ img {
 			                                    <li class="list-inline-item m-0"><i class="fa fa-star-o text-gray"></i></li>
 			                                </ul>
 			                            </div>
+			                            <!-- <button type="button" class="btn btn-info">Info</button> -->
+			                            <button type="button" class = "btn btn-outline-info">
+										    <a href="{% url 'Phoneshopdetails' %}">View</a>
+										</button>
 			                        </div><img src="https://i.imgur.com/KFojDGa.jpg" alt="Generic placeholder image" width="200" class="ml-lg-5 order-1 order-lg-2">
+
 			                    </div> <!-- End -->
+
 			                </li> <!-- End -->
 			                <br>
 			                {% endfor %}

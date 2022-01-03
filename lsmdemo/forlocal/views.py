@@ -10,7 +10,7 @@ from django.contrib.auth.models import Group
 
 from .models import *
 from .forms import PhoneForm, CreateUserForm, OwnerForm, ShopForm
-from .filters import PhoneFilter
+from .filters import PhoneFilter, HomePhoneFilter
 from .decorators import unauthenticated_user, allowed_users, admin_only
 
 # Create your views here.
@@ -19,7 +19,11 @@ def home(request):
 	phone = Smartphone.objects.all()
 	owner = Owner.objects.all()
 
-	context = {'phone': phone, 'owner': owner}
+	# products = Smartphone.objects.all()
+	myFilter = HomePhoneFilter(request.GET, queryset = phone)
+	products = myFilter.qs
+
+	context = {'phone': phone, 'owner': owner, 'myfilter': myFilter}
 	return render(request, 'home.html', context)
 
 @unauthenticated_user
@@ -80,6 +84,7 @@ def logoutpage(request):
 @login_required(login_url = 'Login')
 @allowed_users(allowed_roles = ['owner', 'admin'])
 def shopHome(request):
+	
 	context = {}
 	return render(request, 'shop_home.html', context)
 
@@ -243,3 +248,8 @@ def deletePhone(request, pk):
 
 	context = {'item': phone}
 	return render(request, 'delete.html', context)
+
+
+def phoneShopDetails(request):
+	context = {}
+	return render(request, 'phone_shop_view.html', context)
