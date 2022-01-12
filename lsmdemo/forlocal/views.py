@@ -13,17 +13,35 @@ from .forms import PhoneForm, CreateUserForm, OwnerForm, ShopForm
 from .filters import PhoneFilter, HomePhoneFilter
 from .decorators import unauthenticated_user, allowed_users, admin_only
 
+from django.db.models import Q
+
 # Create your views here.
 
+# def home(request):
+# 	phone = Smartphone.objects.all()
+# 	owner = Owner.objects.all()
+
+# 	# products = Smartphone.objects.all()
+# 	# if request.method == 'GET':
+# 	myFilter = HomePhoneFilter(request.GET.get('q'), queryset = phone)
+# 	products = myFilter.qs
+
+# 	context = {'phone': phone, 'owner': owner, 'myfilter': myFilter}
+# 	return render(request, 'home.html', context)
+
 def home(request):
-	phone = Smartphone.objects.all()
+	# phone = Smartphone.objects.all()
 	owner = Owner.objects.all()
 
-	# products = Smartphone.objects.all()
-	myFilter = HomePhoneFilter(request.GET, queryset = phone)
-	products = myFilter.qs
+	search_phone = request.GET.get('search')
 
-	context = {'phone': phone, 'owner': owner, 'myfilter': myFilter}
+	if search_phone:
+		phone =Smartphone.objects.filter(Q(model = search_phone) | Q(brand = search_phone))
+	else:
+		phone = Smartphone.objects.all()
+
+
+	context = {'phone': phone, 'owner': owner}
 	return render(request, 'home.html', context)
 
 @unauthenticated_user
@@ -250,6 +268,7 @@ def deletePhone(request, pk):
 	return render(request, 'delete.html', context)
 
 
-def phoneShopDetails(request):
-	context = {}
+def phoneShopDetails(request, pk):
+	phone = Smartphone.objects.get(id=pk)
+	context = {'phone': phone}
 	return render(request, 'phone_shop_view.html', context)

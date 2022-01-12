@@ -17,7 +17,7 @@ class PhoneFilter(django_filters.FilterSet):
 	class Meta:
 		model = Smartphone
 		fields = '__all__'
-		exclude = ['owner', 'offer', 'ram', 'rom', 'color']
+		exclude = ['owner', 'offer', 'ram', 'rom', 'color', 'price']
 
 
 class HomePhoneFilter(django_filters.FilterSet):

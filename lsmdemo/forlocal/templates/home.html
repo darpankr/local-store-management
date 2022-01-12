@@ -1,5 +1,6 @@
 
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -91,7 +92,9 @@ img {
 		<div class="container">
 		    <div class="row height d-flex justify-content-center align-items-center">
 		        <div class="col-md-10">
-		            <div class="search"> <i class="fa fa-search"></i> <input type="text" class="form-control" placeholder="Search SmartPhone"> <button class="btn btn-primary">Search</button> </div>
+		        	<form action="{% url 'Home' %}">
+		            <div class="search"> <i class="fa fa-search"></i> <input name = "search" type="text" class="form-control" placeholder="Search SmartPhone"> <button class="btn btn-primary" type="submit">Search</button> </div>
+		        </form>
 		        </div>
 		    </div>
 
@@ -135,8 +138,11 @@ img {
 			                            </div>
 			                            <!-- <button type="button" class="btn btn-info">Info</button> -->
 			                            <button type="button" class = "btn btn-outline-info">
-										    <a href="{% url 'Phoneshopdetails' %}">View</a>
+										    <a href="{% url 'Phoneshopdetails' phone.id %}">View</a>
 										</button>
+										<!-- <form method="link" action="phoneshopdetails/<int:pk>/">
+											<input type="button" value="{{phone.id}}">
+										</form> -->
 			                        </div><img src="https://i.imgur.com/KFojDGa.jpg" alt="Generic placeholder image" width="200" class="ml-lg-5 order-1 order-lg-2">
 
 			                    </div> <!-- End -->

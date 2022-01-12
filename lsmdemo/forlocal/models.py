@@ -61,8 +61,8 @@ class Shop(models.Model):
 
 class Smartphone(models.Model):
 	STATUS = (
-		('available', 'available'),
-		('not available', 'not available')
+		('available', 'In Stock'),
+		('not available', 'Out Of Stock')
 		)
 
 	BRAND = (

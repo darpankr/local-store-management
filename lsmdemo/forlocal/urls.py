@@ -17,6 +17,6 @@ urlpatterns = [
 	path('profilesetting/', views.profileSetting, name = 'Profilesetting'),
 	path('shopprofile/', views.shopProfile, name = 'Shopprofile'),
 	path('shopprofilesetting/', views.shopProfileSetting, name = 'Shopprofilesetting'),
-	path('phoneshopdetails/', views.phoneShopDetails, name = 'Phoneshopdetails'),
+	path('phoneshopdetails/<int:pk>/', views.phoneShopDetails, name = 'Phoneshopdetails'),
 
 ]
